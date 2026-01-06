@@ -1,0 +1,157 @@
+from dotenv import load_dotenv
+import os
+import base64
+from requests import post, get
+import json
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
+
+load_dotenv()
+
+sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
+    client_id=os.getenv("CLIENT_ID"),
+    client_secret=os.getenv("CLIENT_SECRET"),
+    redirect_uri="http://127.0.0.1:8888/callback",
+    scope="user-library-read playlist-modify-private"
+))
+
+
+def get_all_liked_songs():
+    all_tracks = []
+
+    results = sp.current_user_saved_tracks(limit=50)
+
+    while results:
+        for item in results['items']:
+            track = item['track']
+
+            track_info = {
+                "name": track['name'],
+                "track_id": track['id'],
+                "artist_name": track['artists'][0]['name'],
+                "artist_id": track['artists'][0]['id']
+            }
+
+            all_tracks.append(track_info)
+
+            # print(f"Fetched: {track_info['name']} by {track_info['artist_name']}")
+
+        if results['next']:
+            results = sp.next(results)
+        else:
+            results = None
+    return all_tracks
+
+def get_artist_genres(artist_ids):
+    # defining a dictionary
+    artist_genre_dict = {}
+
+    for i in range(0, len(artist_ids), 50):
+        batch = artist_ids[i : i + 50]
+
+        # http get request for Get Several Artists - 50 at a time in this case, because that's the maximum allowed
+        results = sp.artists(batch)
+
+        for artist in results['artists']:
+            artist_genre_dict[artist['id']] = artist['genres']
+    
+    return artist_genre_dict
+
+def sort_songs_by_genre(all_songs, genre_dict):
+    genre_bins = {}
+
+    for song in all_songs:
+        track_id = song['track_id']
+        artist_id = song['artist_id']
+
+        genres = genre_dict.get(artist_id, [])
+
+        for genre in genres:
+            if genre not in genre_bins:
+                genre_bins[genre] = []
+            genre_bins[genre].append(track_id)
+
+    return genre_bins
+
+def get_existing_playlists():
+    existing = {}
+    results = sp.current_user_playlists()
+
+    while results:
+        for playlist in results['items']:
+            existing[playlist['name']] = playlist['id']
+
+        if results['next']:
+            results = sp.next(results)
+        else:
+            results = None
+
+    return existing
+
+def add_tracks_to_playlist(playlist_id, tracks_ids):
+    for i in range(0, len(tracks_ids), 100):
+        batch = tracks_ids[i : i + 100]
+        sp.playlist_add_items(playlist_id, batch)
+        print(f"  - Added {len(batch)} tracks...")
+
+
+
+all_my_songs = get_all_liked_songs()
+
+# Extract unique artist IDs using a set
+# (Sets automatically ignore duplicates)
+unique_artist_ids = list(set([song['artist_id'] for song in all_my_songs]))
+
+master_genre_dict = get_artist_genres(unique_artist_ids)
+
+genre_bins = sort_songs_by_genre(all_my_songs, master_genre_dict)
+
+my_playlists = get_existing_playlists()
+
+user_info = sp.current_user()
+my_user_id = user_info['id']
+
+
+print(f"Starting Dry Run for user: {my_user_id}\n")
+
+
+for genre, tracks in genre_bins.items():
+    if not tracks:
+        continue
+
+    p_name = f"[Spotify API] {genre}"
+
+    if p_name in my_playlists:
+        target_id = my_playlists[p_name]
+        print(f"[WILL USE EXISTING] Playlist: {p_name} (ID: {target_id})")
+    else:
+        print(f"[WILL CREATE NEW] Playlist: {p_name}")
+        target_id = "NEW_ID_SIMULATED"
+
+    print(f"  --> Action: Would add {len(tracks)} tracks to '{p_name}'")
+    sample = tracks[:2]
+    print(f"      Sample IDs: {sample}")
+    print("-" * 30)
+
+print(f"Total songs: {len(all_my_songs)}")
+print(f"Unique artists found: {len(unique_artist_ids)}")
+
+
+
+
+# testing genre dictinoary creation with a single artist 
+# test_id = unique_artist_ids[15]
+# test_genres = master_genre_dict[test_id]
+# print(f"Testing ID: {test_id}")
+# print(f"Genres found: {test_genres}")
+# print(f"Total artists mapped: {len(master_genre_dict)}")
+
+# testing genre mapping 
+# print(f"Total unique genres found: {len(genre_bins)}")
+# for i, (genre, tracks) in enumerate(genre_bins.items()):
+#     if i < 10:
+#         print(f"Genre: {genre:<20} | Songs: {len(tracks)}")
+
+# testing existing playlists
+# my_playlists = get_existing_playlists()
+# print(my_playlists)
