@@ -1,3 +1,6 @@
+# CAREFUL
+# this will need to be modified in order to take songs from UNORGANIZED, instead of liked songs
+
 from dotenv import load_dotenv
 import os
 import base64
@@ -22,7 +25,7 @@ def get_genres(artist_id):
     return genres
 
 # CHANGE THIS WITH THE ID OF THE DESIRED ARTIST
-searched_artist_id = "6rPGKWFVuwuRPPuh1QitHc"
+searched_artist_id = "4ZgQDCtRqZlhLswVS6MHN4"
 
 searched_genres = get_genres(searched_artist_id)
 print(searched_genres)
