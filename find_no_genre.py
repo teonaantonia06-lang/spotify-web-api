@@ -1,3 +1,6 @@
+# CAREFUL
+# this will need to be modified in order to take songs from UNORGANIZED, instead of liked songs
+
 from dotenv import load_dotenv
 import os
 import base64
