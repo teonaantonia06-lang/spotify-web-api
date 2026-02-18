@@ -15,7 +15,6 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
     scope="user-library-read playlist-modify-private"
 ))
 
-# itterate through given playlist 
 def create_artist_set(playlist_id):
     artists_set = set()
     results = sp.playlist_items(playlist_id)
