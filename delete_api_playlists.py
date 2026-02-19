@@ -14,14 +14,3 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
     redirect_uri="http://127.0.0.1:8888/callback",
     scope="user-library-read playlist-modify-private"
 ))
-
-def get_genres(artist_id):
-    artist = sp.artist(artist_id)
-    genres = artist['genres']
-    return genres
-
-# CHANGE THIS WITH THE ID OF THE DESIRED ARTIST
-searched_artist_id = "22WZ7M8sxp5THdruNY3gXt"
-
-searched_genres = get_genres(searched_artist_id)
-print(searched_genres)
