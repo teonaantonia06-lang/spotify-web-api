@@ -1,0 +1,35 @@
+name: Monthly Code Runner
+
+on:
+  schedule:
+    # This syntax means: Minute 0, Hour 0, Day 1, Every Month, Every Weekday
+    - cron: '0 0 1 * *'
+  workflow_dispatch: # This allows you to run it manually whenever you want!
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Environment
+        # Change this to 'setup-python' or 'setup-node' depending on your language
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.14'
+
+      - name: Create to-sort playlist
+        env:
+          # This maps your GitHub Secret to an environment variable
+          MY_CLIENT_ID: ${{ secrets.CLIENT_ID }} 
+          MY_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+        run: python create_to-sort_playlist.py
+
+      - name: Create new playlists
+        env:
+          # This maps your GitHub Secret to an environment variable
+          MY_CLIENT_ID: ${{ secrets.CLIENT_ID }} 
+          MY_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+        run: python sort_in_genre_playlists_from_playlist_ID.py
+
+      
