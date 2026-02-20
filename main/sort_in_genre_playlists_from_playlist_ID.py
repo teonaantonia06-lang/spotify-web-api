@@ -18,8 +18,8 @@ from spotipy.oauth2 import SpotifyOAuth
 refresh_token = os.getenv("SPOTIPY_REFRESH_TOKEN")
 
 auth_manager = SpotifyOAuth(
-    client_id=os.getenv("CLIENT_ID"),
-    client_secret=os.getenv("CLIENT_SECRET"),
+    client_id=os.getenv("MY_CLIENT_ID"),
+    client_secret=os.getenv("MY_CLIENT_SECRET"),
     redirect_uri="http://127.0.0.1:8888/callback",
     scope="user-library-read playlist-modify-private",
     cache_path=None if refresh_token else ".cache"
