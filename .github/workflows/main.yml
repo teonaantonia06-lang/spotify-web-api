@@ -26,13 +26,13 @@ jobs:
           # This maps your GitHub Secret to an environment variable
           MY_CLIENT_ID: ${{ secrets.CLIENT_ID }} 
           MY_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-        run: python create_to-sort_playlist.py
+        run: python main/create_to-sort_playlist.py
 
       - name: Create new playlists
         env:
           # This maps your GitHub Secret to an environment variable
           MY_CLIENT_ID: ${{ secrets.CLIENT_ID }} 
           MY_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-        run: python sort_in_genre_playlists_from_playlist_ID.py
+        run: python main/sort_in_genre_playlists_from_playlist_ID.py
 
       
