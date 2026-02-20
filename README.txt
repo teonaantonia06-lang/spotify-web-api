@@ -84,3 +84,13 @@ Final Notes
 This project is an exploration, not a product.
 Imperfection is expected.
 Curiosity comes first.
+
+
+Improvements
+* Scripts for sorting into genre based playlists both all user tracks and a playlist ID 
+* The dryrun.py script can be used to test the connection (it was used during implementation for testing as well)
+* Implemented a system that can create a new to-sort playlist based on an already existing playlists with the already sorted songs 
+(the to-sort playlist can then be used as input)
+* Added utils scripts for a diversity of smaller actions that a user might need to do
+(deleting the playlists created any of these scripts, finding all the songs without genres from a playlists,
+printing all genres presented in a playlist, printing an artist's genres)
