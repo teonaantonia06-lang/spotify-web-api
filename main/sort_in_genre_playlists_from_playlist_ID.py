@@ -27,7 +27,7 @@ auth_manager = SpotifyOAuth(
 
 if refresh_token:
     auth_manager.refresh_access_token(refresh_token)
-
+    
 sp = spotipy.Spotify(auth_manager=auth_manager)
 
 # create dict for 
