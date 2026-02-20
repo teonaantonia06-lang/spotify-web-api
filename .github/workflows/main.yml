@@ -18,8 +18,10 @@ jobs:
         with:
           python-version: '3.14'
 
-      - name: Check file structure
-        run: ls -R
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install python-dotenv spotipy requests
 
       - name: Create to-sort playlist
         env:
