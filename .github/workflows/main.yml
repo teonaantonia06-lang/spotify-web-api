@@ -18,6 +18,9 @@ jobs:
         with:
           python-version: '3.14'
 
+      - name: Check file structure
+        run: ls -R
+
       - name: Create to-sort playlist
         env:
           # This maps your GitHub Secret to an environment variable
