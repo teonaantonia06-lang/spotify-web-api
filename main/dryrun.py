@@ -1,3 +1,8 @@
+# do we actually need this since i know my code fairly well by now,
+# theres no way to actually destroy anything 
+# and i am gonna modify things, so its not gonna be a one on one resemblence? 
+# should i still keep it tho? would maintaining be too much work?
+
 from dotenv import load_dotenv
 import os
 import base64

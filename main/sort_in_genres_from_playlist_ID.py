@@ -1,3 +1,5 @@
+# careful, it currently duplicates stuff
+
 from dotenv import load_dotenv
 import os
 import base64
@@ -14,21 +16,6 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
     redirect_uri="http://127.0.0.1:8888/callback",
     scope="user-library-read playlist-modify-private"
 ))
-
-refresh_token = os.getenv("SPOTIPY_REFRESH_TOKEN")
-
-auth_manager = SpotifyOAuth(
-    client_id=os.getenv("MY_CLIENT_ID"),
-    client_secret=os.getenv("MY_CLIENT_SECRET"),
-    redirect_uri="http://127.0.0.1:8888/callback",
-    scope="user-library-read playlist-modify-private",
-    cache_path=None if refresh_token else ".cache"
-)
-
-if refresh_token:
-    auth_manager.refresh_access_token(refresh_token)
-    
-sp = spotipy.Spotify(auth_manager=auth_manager)
 
 # create dict for 
 def get_songs_from_playlist(playlist_id):
@@ -47,8 +34,6 @@ def get_songs_from_playlist(playlist_id):
             }
 
             tracks.append(track_info)
-
-            # print(f"Fetched: {track_info['name']} by {track_info['artist_name']}")
 
         if results['next']:
             results = sp.next(results)
@@ -100,14 +85,31 @@ def get_existing_playlists():
 
     return existing
 
+# fixed duplicating
+def get_existing_track_ids(playlist_id):
+    existing = set()
+    results = sp.playlist_items(playlist_id)
+    while results:
+        for item in results['items']:
+            existing.add(item['track']['id'])
+        results = sp.next(results) if results['next'] else None
+    return existing
+
 def add_tracks_to_playlist(playlist_id, tracks_ids):
-    for i in range(0, len(tracks_ids), 100):
-        batch = tracks_ids[i : i + 100]
+    existing = get_existing_track_ids(playlist_id)
+    new_tracks = []
+
+    for track in tracks_ids:
+        if track not in existing:
+            new_tracks.append(track)
+
+    for i in range(0, len(new_tracks), 100):
+        batch = new_tracks[i : i + 100]
         sp.playlist_add_items(playlist_id, batch)
         print(f"  - Added {len(batch)} tracks...")
 
 # CAREFUL HERE
-playlist_id = "1tqaT0EGXwPJqTuvIfFwtO"
+playlist_id = "6MeBiKxo4qWhBdO5NSZmoN"
 
 tracks = get_songs_from_playlist(playlist_id)
 
@@ -123,8 +125,6 @@ my_playlists = get_existing_playlists()
 user_info = sp.current_user()
 my_user_id = user_info['id']
 
-print(f"Starting Dry Run for user: {my_user_id}\n")
-
 for genre, tracks in genre_bins.items():
     if not tracks:
         continue
@@ -139,6 +139,7 @@ for genre, tracks in genre_bins.items():
         target_id = new_p['id']
         print(f"Created NEW playlist: {p_name}")
 
+    # check if song exists 
     add_tracks_to_playlist(target_id, tracks)
 
 

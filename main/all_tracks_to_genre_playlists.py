@@ -1,3 +1,6 @@
+# before running this is good to do a dry run
+# (keep comments around for that)
+
 from dotenv import load_dotenv
 import os
 import base64
