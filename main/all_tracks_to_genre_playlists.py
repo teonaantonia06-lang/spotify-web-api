@@ -1,6 +1,3 @@
-# before running this is good to do a dry run
-# (keep comments around for that)
-
 from dotenv import load_dotenv
 import os
 import base64
@@ -91,9 +88,26 @@ def get_existing_playlists():
 
     return existing
 
+# fixed duplicating
+def get_existing_track_ids(playlist_id):
+    existing = set()
+    results = sp.playlist_items(playlist_id)
+    while results:
+        for item in results['items']:
+            existing.add(item['track']['id'])
+        results = sp.next(results) if results['next'] else None
+    return existing
+
 def add_tracks_to_playlist(playlist_id, tracks_ids):
-    for i in range(0, len(tracks_ids), 100):
-        batch = tracks_ids[i : i + 100]
+    existing = get_existing_track_ids(playlist_id)
+    new_tracks = []
+
+    for track in tracks_ids:
+        if track not in existing:
+            new_tracks.append(track)
+
+    for i in range(0, len(new_tracks), 100):
+        batch = new_tracks[i : i + 100]
         sp.playlist_add_items(playlist_id, batch)
         print(f"  - Added {len(batch)} tracks...")
 

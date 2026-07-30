@@ -1,5 +1,3 @@
-# careful, it currently duplicates stuff
-
 from dotenv import load_dotenv
 import os
 import base64
@@ -139,7 +137,6 @@ for genre, tracks in genre_bins.items():
         target_id = new_p['id']
         print(f"Created NEW playlist: {p_name}")
 
-    # check if song exists 
     add_tracks_to_playlist(target_id, tracks)
 
 

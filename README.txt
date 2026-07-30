@@ -94,3 +94,10 @@ Improvements
 * Added utils scripts for a diversity of smaller actions that a user might need to do
 (deleting the playlists created any of these scripts, finding all the songs without genres from a playlists,
 printing all genres presented in a playlist, printing an artist's genres)
+
+
+
+I'm probably dropping this. I'm moving away from my listening to music being genre-based, so this is no longer serving its purpose. 
+Plus, I am NOT going to keep maintaing the already script created playlists. That's too much work. 
+They scratched the itch at the moment of starting, but that's no longer the case. 
+Might come back to this if I get the urge again. Byee. 

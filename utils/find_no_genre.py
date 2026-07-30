@@ -65,7 +65,6 @@ def get_artitsts_without_genres(genre_dict):
             artists_without_genres.add(entry)
     return artists_without_genres
 
-# new, tested, should be fine
 def get_existing(dest_playlist_id):
     existing_list = []
     results = sp.playlist_items(dest_playlist_id)
@@ -80,12 +79,10 @@ def get_existing(dest_playlist_id):
 
     return set(existing_list)
 
-# updated to search, its gonna make it slow
 def create_genreless_tracks_list(all_songs, existing, genreless_astists):
     genreless_tracks_list = []
     for song in all_songs:
         if song['artist_id'] in genreless_astists and song['track_id'] not in existing:
-            # if find_song_in_playlist(existing, song['track_id']) == 0:
             genreless_tracks_list.append(song['track_id'])
 
     return genreless_tracks_list

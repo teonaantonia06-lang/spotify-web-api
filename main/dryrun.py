@@ -1,7 +1,8 @@
-# do we actually need this since i know my code fairly well by now,
+# do we actually need this since i know how to read the code fairly well by now?
 # theres no way to actually destroy anything 
-# and i am gonna modify things, so its not gonna be a one on one resemblence? 
-# should i still keep it tho? would maintaining be too much work?
+# im pretty sure some things have been modified in main, so its not gonna be a one on one resemblence 
+# im not deleting it, but its probably not very useful either
+# for an actual dry run you can just comment out the lines of code that are doing the actual work in spotify
 
 from dotenv import load_dotenv
 import os
