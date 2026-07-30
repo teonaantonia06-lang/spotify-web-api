@@ -15,21 +15,6 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
     scope="user-library-read playlist-modify-private"
 ))
 
-refresh_token = os.getenv("SPOTIPY_REFRESH_TOKEN")
-
-auth_manager = SpotifyOAuth(
-    client_id=os.getenv("MY_CLIENT_ID"),
-    client_secret=os.getenv("MY_CLIENT_SECRET"),
-    redirect_uri="http://127.0.0.1:8888/callback",
-    scope="user-library-read playlist-modify-private",
-    cache_path=None if refresh_token else ".cache"
-)
-
-if refresh_token:
-    auth_manager.refresh_access_token(refresh_token)
-
-sp = spotipy.Spotify(auth_manager=auth_manager)
-
 def get_all_liked_songs():
     all_tracks = []
     results = sp.current_user_saved_tracks(limit=50)
@@ -63,16 +48,36 @@ def already_sorted_to_set(playlist_id):
 
     return sorted_set
 
+def get_existing(dest_playlist_id):
+    existing_list = []
+    results = sp.playlist_items(dest_playlist_id)
+    while results:
+        for item in results['items']:
+            existing_list.append(item['track']['id'])
+
+        if results['next']:
+            results = sp.next(results)
+        else:
+            results = None
+
+    return set(existing_list)
+
 def create_to_sort_list(all, sorted):
     to_sort_list = []
     for song in all:
         if song not in sorted:
             to_sort_list.append(song)
-    return to_sort_list
+    return set(to_sort_list)
 
+# removed duplicates
 def add_to_playlist(tracks, playlist_id):
-    for i in range(0, len(tracks), 100):
-        batch = tracks[i : i + 100]
+    existing = get_existing(playlist_id)
+    new_tracks = []
+    for track in tracks:
+        if track not in existing:
+            new_tracks.append(track)
+    for i in range(0, len(new_tracks), 100):
+        batch = new_tracks[i : i + 100]
         sp.playlist_add_items(playlist_id, batch)
         print(f"  - Added {len(batch)} tracks...")
 
