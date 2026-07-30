@@ -1,5 +1,4 @@
-# CAREFUL
-# this will need to be modified in order to take songs from UNORGANIZED, instead of liked songs
+# this will add songs without a listed genre from liked songs to a designated playlist, WITHOUT adding dupplicates
 
 from dotenv import load_dotenv
 import os
@@ -66,11 +65,27 @@ def get_artitsts_without_genres(genre_dict):
             artists_without_genres.add(entry)
     return artists_without_genres
 
-def create_genreless_tracks_list(all_songs, genreless_astists):
+# new, tested, should be fine
+def get_existing(dest_playlist_id):
+    existing_list = []
+    results = sp.playlist_items(dest_playlist_id)
+    while results:
+        for item in results['items']:
+            existing_list.append(item['track']['id'])
+
+        if results['next']:
+            results = sp.next(results)
+        else:
+            results = None
+
+    return set(existing_list)
+
+# updated to search, its gonna make it slow
+def create_genreless_tracks_list(all_songs, existing, genreless_astists):
     genreless_tracks_list = []
-    
     for song in all_songs:
-        if song['artist_id'] in genreless_astists:
+        if song['artist_id'] in genreless_astists and song['track_id'] not in existing:
+            # if find_song_in_playlist(existing, song['track_id']) == 0:
             genreless_tracks_list.append(song['track_id'])
 
     return genreless_tracks_list
@@ -82,6 +97,8 @@ def add_to_playlist(playlist_id, genreless_tracks):
         print(f"  - Added {len(batch)} tracks...")
     
 
+# careful here
+genreless_playlist_id = "1nv0jZcSEbKxhqwOxrVfs7"
 
 all_my_songs = get_all_liked_songs()
 
@@ -91,15 +108,16 @@ master_genre_dict = get_artist_genres(unique_artist_ids)
 
 artists_without_genre = get_artitsts_without_genres(master_genre_dict)
 
-genreless_tracks = create_genreless_tracks_list(all_my_songs, artists_without_genre)
+existing = get_existing(genreless_playlist_id)
 
-# careful to what playlist you add
-# genreless_playlist_id = "1nv0jZcSEbKxhqwOxrVfs7"
+genreless_tracks = create_genreless_tracks_list(all_my_songs, existing, artists_without_genre)
 
 add_to_playlist(genreless_playlist_id, genreless_tracks)
 
 
 
 
-
-        
+# lists vs sets
+# no need to search in them on your own, python can do that alrdy with in / not in
+# the same opperator will have o(n) for lists [], but o(1) on sets {}
+# it uses hashing on sets 

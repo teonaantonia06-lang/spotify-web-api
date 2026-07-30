@@ -21,7 +21,7 @@ def get_genres(artist_id):
     return genres
 
 # CHANGE THIS WITH THE ID OF THE DESIRED ARTIST
-searched_artist_id = "22WZ7M8sxp5THdruNY3gXt"
+searched_artist_id = "2sil8z5kiy4r76CRTXxBCA"
 
 searched_genres = get_genres(searched_artist_id)
 print(searched_genres)

@@ -6,14 +6,14 @@ import json
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
-# load_dotenv()
+load_dotenv()
 
-# sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
-#     client_id=os.getenv("CLIENT_ID"),
-#     client_secret=os.getenv("CLIENT_SECRET"),
-#     redirect_uri="http://127.0.0.1:8888/callback",
-#     scope="user-library-read playlist-modify-private"
-# ))
+sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
+    client_id=os.getenv("CLIENT_ID"),
+    client_secret=os.getenv("CLIENT_SECRET"),
+    redirect_uri="http://127.0.0.1:8888/callback",
+    scope="user-library-read playlist-modify-private"
+))
 
 refresh_token = os.getenv("SPOTIPY_REFRESH_TOKEN")
 

@@ -6,14 +6,14 @@ import json
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
-# load_dotenv()
+load_dotenv()
 
-# sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
-#     client_id=os.getenv("CLIENT_ID"),
-#     client_secret=os.getenv("CLIENT_SECRET"),
-#     redirect_uri="http://127.0.0.1:8888/callback",
-#     scope="user-library-read playlist-modify-private"
-# ))
+sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
+    client_id=os.getenv("CLIENT_ID"),
+    client_secret=os.getenv("CLIENT_SECRET"),
+    redirect_uri="http://127.0.0.1:8888/callback",
+    scope="user-library-read playlist-modify-private"
+))
 
 refresh_token = os.getenv("SPOTIPY_REFRESH_TOKEN")
 
@@ -106,8 +106,8 @@ def add_tracks_to_playlist(playlist_id, tracks_ids):
         sp.playlist_add_items(playlist_id, batch)
         print(f"  - Added {len(batch)} tracks...")
 
-# careful here
-playlist_id = "6MeBiKxo4qWhBdO5NSZmoN"
+# CAREFUL HERE
+playlist_id = "1tqaT0EGXwPJqTuvIfFwtO"
 
 tracks = get_songs_from_playlist(playlist_id)
 
@@ -140,5 +140,8 @@ for genre, tracks in genre_bins.items():
         print(f"Created NEW playlist: {p_name}")
 
     add_tracks_to_playlist(target_id, tracks)
+
+
+    # used to sort into multiple genre playlists from TO_SORT for example
 
 

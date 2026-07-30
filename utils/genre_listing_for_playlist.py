@@ -47,7 +47,7 @@ def get_artists_genres(artist_ids):
     return genres_set
 
 
-playlist_id = "63ZVgXPm6YIp7vJBLSqEIP"
+playlist_id = "1tqaT0EGXwPJqTuvIfFwtO"
 
 artists_id_set = create_artist_set(playlist_id)
 
